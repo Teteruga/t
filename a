@@ -1,0 +1,481 @@
+//@ts-check
+
+class AjaxRequisition{
+
+    url;
+    data_enviar;
+    cache;
+    content_type;
+    process_data;
+    type;
+    dataType;
+    responseText;
+    beforeSend;
+    done;
+    fail;
+    always;
+
+    constructor(requisitionObject){
+
+        for (var property in requisitionObject) {
+            if (requisitionObject.hasOwnProperty(property)) {
+              this.checkRequisitionObject(property)
+            }
+          }
+
+    }
+
+
+    checkRequisitionObject(property){
+        if(typeof property !== 'undefined'){
+            
+        }
+    }
+
+}
+
+function aajax(requisition){
+
+    var requisitionObject = checkRequisitionObject(requisition);
+
+    $.ajax({
+        url: url,
+        data: data_enviar,
+        cache: cache,
+        contentType: content_type,
+        processData: process_data,
+        type: type,
+        dataType: dataType,
+        responseText: responseText,
+        beforeSend: function() {
+            function_beforeSend();
+          }
+    }).done(function(data) {
+        try{
+            function_done(data);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }).fail(function(data){
+        try{
+            function_fail(data);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }).always(function(data) {
+        try{    
+            function_always(data);
+        }
+        catch(err){
+            console.log(err);
+        }
+    });
+
+}
+
+function ajax(alvo, url, data_enviar, function_done, function_fail, function_beforeSend, function_always, 
+                type, content_type, dataType, responseText, process_data, cache) {
+
+    $.ajax({
+        url: url,
+        data: data_enviar,
+        cache: cache,
+        contentType: content_type,
+        processData: process_data,
+        type: type,
+        dataType: dataType,
+        responseText: responseText,
+        beforeSend: function() {
+            function_beforeSend();
+          }
+    }).done(function(data) {
+        try{
+            function_done(data);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }).fail(function(data){
+        try{
+            function_fail(data);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }).always(function(data) {
+        try{    
+            function_always(data);
+        }
+        catch(err){
+            console.log(err);
+        }
+    });
+
+}
+
+//Inicio funções ajax post especificas
+
+    function ajaxPostDefault(alvo, url, data_enviar = false){
+
+        ajax( 
+            alvo,
+            url,
+            data_enviar,
+            function(data){ doneDefault(alvo, data) },
+            function(data){ failDefault(data) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'POST',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxPostLoader(alvo, url, data_enviar, mensagem = "Carregando...", function_loader = function(alvo, mensagem){beforeSendDefault(alvo, mensagem)} ){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ doneDefault(alvo, data) },
+            function(data){ failDefault(data) },
+            function(){ function_loader(alvo, mensagem) },
+            function(data){ alwaysDefault(data) },
+            'POST',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxPostFail(alvo, url, data_enviar, err_mensagem = "Ocorreu algum erro!", function_fail = function(data, err_mensagem){failDefault(data, err_mensagem)} ){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ doneDefault(alvo, data) },
+            function(data){ function_fail(data, err_mensagem) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'POST',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxPostDone(alvo, url, data_enviar, function_done = function(data){doneDefault(data)} ){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ failDefault(data) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'POST',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxPostDoneLoader(alvo, url, data_enviar, function_done = function(data){doneDefault(data)}, 
+                                    mensagem = "Carregando...", function_loader = function(alvo, mensagem){beforeSendDefault(alvo, mensagem)} ){
+        
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ failDefault(data) },
+            function(){ function_loader(alvo, mensagem) },
+            function(data){ alwaysDefault(data) },
+            'POST',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxPostDoneFail(alvo, url, data_enviar, function_done = function(data){doneDefault(data)},
+                                err_mensagem = "Ocorreu algum erro!", function_fail = function(data, err_mensagem){failDefault(data, err_mensagem)}){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ function_fail(data, err_mensagem) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'POST',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxPostFull(alvo, url, data_enviar = false, function_done, function_fail, function_beforeSend, 
+                function_always = function(data){ alwaysDefault(data) }, content_type = false, dataType = false, responseText = false, process_data = false, cache = false) {
+        
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ function_fail(data, err_mensagem) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'POST',
+            content_type,
+            dataType,
+            responseText,
+            process_data,
+            cache,
+        );   
+    }
+
+//Fim funções ajax post especificas
+
+//Inicio funções ajax get especificas
+
+    function ajaxGetDefault(alvo, url, data_enviar = false){
+
+        ajax( 
+            alvo,
+            url,
+            data_enviar,
+            function(data){ doneDefault(alvo, data) },
+            function(data){ failDefault(data) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'GET',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxGetLoader(alvo, url, data_enviar, mensagem = "Carregando...", function_loader = function(alvo, mensagem){beforeSendDefault(alvo, mensagem)} ){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ doneDefault(alvo, data) },
+            function(data){ failDefault(data) },
+            function(){ function_loader(alvo, mensagem) },
+            function(data){ alwaysDefault(data) },
+            'GET',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxGetFail(alvo, url, data_enviar, err_mensagem = "Ocorreu algum erro!", function_fail = function(data, err_mensagem){failDefault(data, err_mensagem)} ){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ doneDefault(alvo, data) },
+            function(data){ function_fail(data, err_mensagem) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'GET',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxGetDone(alvo, url, data_enviar, function_done = function(data){doneDefault(data)} ){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ failDefault(data) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'GET',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxGetDoneLoader(alvo, url, data_enviar, function_done = function(data){doneDefault(data)}, 
+                                    mensagem = "Carregando...", function_loader = function(alvo, mensagem){beforeSendDefault(alvo, mensagem)} ){
+        
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ failDefault(data) },
+            function(){ function_loader(alvo, mensagem) },
+            function(data){ alwaysDefault(data) },
+            'GET',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxGetDoneFail(alvo, url, data_enviar, function_done = function(data){doneDefault(data)},
+                                err_mensagem = "Ocorreu algum erro!", function_fail = function(data, err_mensagem){failDefault(data, err_mensagem)}){
+
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ function_fail(data, err_mensagem) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'GET',
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
+    }
+
+    function ajaxGetFull(alvo, url, data_enviar = false, function_done, function_fail, function_beforeSend, 
+                function_always = function(data){ alwaysDefault(data) }, content_type = false, dataType = false, responseText = false, process_data = false, cache = false) {
+        
+        ajax(
+            alvo,
+            url,
+            data_enviar,
+            function(data){ function_done(data) },
+            function(data){ function_fail(data, err_mensagem) },
+            function(){},
+            function(data){ alwaysDefault(data) },
+            'GET',
+            content_type,
+            dataType,
+            responseText,
+            process_data,
+            cache,
+        );   
+    }
+
+// Funções complementares
+
+function ajaxSelectCombo(obj, alvo, url){
+
+    var valor = $(obj).val();
+
+    ajaxGetDefault(alvo, url+"/"+valor);
+    
+}
+
+function doneDefault(alvo, data){
+
+    var $alvo = $(alvo);
+
+    switch($alvo.prop("tagName")){
+        case "SELECT":
+            $(alvo + ' option').remove();
+            $alvo.append( $(transformJsonToHtmlOption(data)) );
+            break;
+        case "INPUT":
+            $alvo.val(transformJsonToString(data));
+            break;
+        default:
+            $alvo.html(data);
+
+    }
+
+}
+
+function failDefault(data, err_mensagem = "Ocorreu algum erro!"){
+    snackbar(err_mensagem);
+}
+
+function beforeSendDefault(alvo, mensagem){
+    $(alvo).html('<div class="loader-container"><div style="font-size:0.75rem; margin-bottom: 1rem" class="loader-texto">' + mensagem + '</div><div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>');
+}
+
+function alwaysDefault(data){
+    snackbar("Ajax Finalizado!");
+}
+
+function transformJsonToString(data){
+    return transformJson(data, "string");
+}
+
+function transformJsonToHtmlList(data){
+    return transformJson(data, "html-list");
+}
+
+function transformJsonToHtmlOption(data){
+    return transformJson(data, "html-option");
+}
+
+function transformJson(data, transformTo){
+
+    var transformed = ""
+
+    switch(transformTo){
+        case "string":
+        
+            $.each(data, function(key,value) {
+                transformed += " "+value;
+            });
+
+            transformed = transformed.trim();
+        break;
+        case "html-list":
+
+            transformed = $("<ul></ul>");
+
+            $.each(data, function(key,value) {
+                transformed.append( $("<li>"+value+"</li>") );
+            });
+            break;
+        case "html-option":
+
+            $.each(data, function(key,value) {
+                transformed += "<option value = "+key+">"+value+"</option>";
+            });
+            break;
+        default:
+            transformed = JSON.stringify(data);
+    }
+
+    return transformed;
+}
